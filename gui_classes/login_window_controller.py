@@ -1,13 +1,8 @@
 from PyQt6.QtCore import QRegularExpression
 
-from auxiliary.window_movement import DummyWindow
-from auxiliary.gui_base_methods import *
-from board_gui_controller import *
 from gui_py_source.login_window import *
 from gui_classes.menu_window_controller import *
-from board_gui_controller import Board_gui
 from database_management import credentials_manager
-from platform import system
 
 
 class LoginWindowController(DummyWindow):

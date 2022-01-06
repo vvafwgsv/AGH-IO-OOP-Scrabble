@@ -3,10 +3,9 @@ from PyQt6.QtWidgets import QWidget
 
 from auxiliary.window_movement import DummyWindow
 from auxiliary.gui_base_methods import *
-from database_management import credentials_manager
 from database_management.credentials_manager import CredentialsManager
 from gui_py_source.hotseat_player_count_window import *
-from board_gui_controller import Board_gui
+from gui_classes.board_gui_controller import Board_gui
 from gui_py_source.hotseat_players_login_window import Ui_hotseat_players_login_window
 from player import Player
 

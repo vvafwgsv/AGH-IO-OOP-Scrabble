@@ -1,8 +1,4 @@
-from auxiliary.window_movement import DummyWindow
-from auxiliary.gui_base_methods import *
-from gui_py_source.hotseat_player_count_window import *
 from gui_classes.hotseat_players_login_controller import *
-from board_gui_controller import Board_gui
 
 
 class HotseatPlayerCountController(DummyWindow):

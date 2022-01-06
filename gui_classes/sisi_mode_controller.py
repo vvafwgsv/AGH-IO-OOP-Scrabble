@@ -1,7 +1,4 @@
-from PyQt6.QtWidgets import QCheckBox
-
 from gui_classes.hotseat_players_login_controller import *
-from board_gui_controller import Board_gui
 from gui_py_source.sisi_mode_window import Ui_sisi_mode_window
 
 

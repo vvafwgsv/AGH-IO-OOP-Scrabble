@@ -1,13 +1,11 @@
-from auxiliary.window_movement import DummyWindow
 from auxiliary.gui_base_methods import *
-from board_gui_controller import *
+from auxiliary.window_movement import DummyWindow
+from gui_classes.board_gui_controller import Board_gui
 from gui_classes.hotseat_player_count_controller import HotseatPlayerCountController
-from gui_classes.hotseat_players_login_controller import HotseatPlayerLoginController
-from gui_classes.login_window_controller import LoginWindowController
 from gui_classes.settings_window_controller import SettingsController
 from gui_classes.sisi_mode_controller import SisiModeController
 from gui_py_source.menu_window import *
-from board_gui_controller import Board_gui
+from management_database import ManagementGeneralLeaderboard
 
 
 class MenuWindowController(DummyWindow):
@@ -73,8 +71,8 @@ class MenuWindowController(DummyWindow):
     def open_logout_alert(self) -> None:
         # TODO: make it an actual alert
         self.close()
+        from gui_classes.login_window_controller import LoginWindowController
         LoginWindowController()
-
 
     def fetch_and_set_players_score(self) -> None:
         _top5_scores = ManagementGeneralLeaderboard.get_general_leaderboard()
