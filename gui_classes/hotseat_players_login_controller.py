@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QWidget
 from auxiliary.window_movement import DummyWindow
 from auxiliary.gui_base_methods import *
 from database_management import credentials_manager
+from database_management.credentials_manager import CredentialsManager
 from gui_py_source.hotseat_player_count_window import *
 from board_gui_controller import Board_gui
 from gui_py_source.hotseat_players_login_window import Ui_hotseat_players_login_window
@@ -81,7 +82,7 @@ class HotseatPlayerLoginController(DummyWindow):
         # check if not empty
         if _passw != '' and _log != '':
             # verify supplied data, if correct set p[1-9]+of[1-9]+_logged_stacked as currentW.
-            if credentials_manager.verify_credentials(_log, _passw):
+            if CredentialsManager.verify_credentials(_log, _passw):
                 print('correct creds')
 
                 # using one of names of passed objects to get reference to

@@ -3,6 +3,7 @@ from auxiliary.gui_base_methods import *
 from board_gui_controller import *
 from gui_classes.hotseat_player_count_controller import HotseatPlayerCountController
 from gui_classes.hotseat_players_login_controller import HotseatPlayerLoginController
+from gui_classes.login_window_controller import LoginWindowController
 from gui_classes.settings_window_controller import SettingsController
 from gui_classes.sisi_mode_controller import SisiModeController
 from gui_py_source.menu_window import *
@@ -70,7 +71,10 @@ class MenuWindowController(DummyWindow):
             self.hide()
 
     def open_logout_alert(self) -> None:
-        print('logout opened')
+        # TODO: make it an actual alert
+        self.close()
+        LoginWindowController()
+
 
     def fetch_and_set_players_score(self) -> None:
         _top5_scores = ManagementGeneralLeaderboard.get_general_leaderboard()
@@ -83,9 +87,8 @@ class MenuWindowController(DummyWindow):
                 break
 
 
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    ent = MenuWindowController()
+    ent = MenuWindowController('dummy host')
     sys.exit(app.exec())

@@ -41,25 +41,26 @@ class SisiModeController(DummyWindow):
     def start_player_si_game(ai: str) -> None:
             print('%s %s' % ('player', ai))
             # ### GET CURRENT PLAYER ID
-            # _player = Player(
-            #     self.menu_handle.host_id, []
-            # )
+            # _player = Player(self.menu_handle.host_id, [])
             # _ai = AI(ai)
             # Board_gui(2, [_player, _ai], self.menu_handle)
 
     def verify_checkboxes(self) -> bool:
-        _s1_checkboxes =[checkbox for checkbox in self.findChildren(QCheckBox, QRegularExpression('s1_*')) if checkbox.isChecked()]
-        _s2_checkboxes =[checkbox for checkbox in self.findChildren(QCheckBox, QRegularExpression('s2_*')) if checkbox.isChecked()]
+        _s1_checkboxes = [checkbox for checkbox in self.findChildren(QCheckBox, QRegularExpression('s1_*')) if checkbox.isChecked()]
+        _s2_checkboxes = [checkbox for checkbox in self.findChildren(QCheckBox, QRegularExpression('s2_*')) if checkbox.isChecked()]
 
         if len(_s1_checkboxes) % 2 or len(_s2_checkboxes) % 2:
             uncheck_all([*_s1_checkboxes, *_s2_checkboxes])
             return False
-
+        elif not len(_s1_checkboxes) % 2 and not len(_s2_checkboxes) % 2:
+            return True
+        else:
+            print('idk co to robi')
+            return False
 
     def start_sisi_game(self) -> None:
         if self.verify_checkboxes():
-
-        pass
+            print('sisi +')
 
     def signal_closing(self) -> None:
         self.menu_handle._is_hs_open = False
