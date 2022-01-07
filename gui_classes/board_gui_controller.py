@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QMainWindow
 
-from auxiliary.gui_base_methods import board_to_string
+from auxiliary.gui_base_methods import board_to_string, string_to_board
 from word import Word
 from board import Board
 from collections import defaultdict
@@ -254,7 +254,9 @@ class Board_gui(QtWidgets.QMainWindow):
             _b2string = board_to_string(self.actual_board)
             # TODO: copy self.new_player_move_board into db
             ManagementGeneralLeaderboard.save_board(_b2string, self.game_id, self.players[self.current_player].name, self.moves_count)
-            _string2b = ManagementGeneralLeaderboard.acquire_board(self.game_id)
+            # acquire all board per move info; index[1][0][3] denotes board2string; index[] is bool
+            _string2b = string_to_board(ManagementGeneralLeaderboard.acquire_board(self.game_id)[1][0][3])
+
             self.board.actual_board = self.actual_board
             # check for new adjacencies 0,1,2
             self.board.create_sum_board_4_connection()

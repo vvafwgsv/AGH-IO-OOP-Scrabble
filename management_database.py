@@ -66,6 +66,10 @@ class ManagementGeneralLeaderboard:
 
     @staticmethod
     def acquire_board(game_id: str) -> [bool | list]:
+        """
+        ACCEPTS: game_id generated upon game start
+        RETURNS: list of tuples (game_id, player that did the move, move id in respect to the game start, board2string)
+        """
         try:
             con = sl.connect("{}{}".format(os.getcwd(), "/leaderboard.db"))
             cur = con.cursor()
