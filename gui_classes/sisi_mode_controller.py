@@ -60,7 +60,7 @@ class SisiModeController(DummyWindow):
             print('sisi +')
 
     def signal_closing(self) -> None:
-        self.menu_handle._is_hs_open = False
+        self.menu_handle._is_si_open = False
 
     def return_to_menu(self):
         self.menu_handle.show()

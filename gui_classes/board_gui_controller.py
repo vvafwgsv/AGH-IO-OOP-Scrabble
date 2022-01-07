@@ -1,6 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QMainWindow
 
+from auxiliary.gui_base_methods import board_to_string
 from word import Word
 from board import Board
 from collections import defaultdict
@@ -23,6 +24,10 @@ class Board_gui(QtWidgets.QMainWindow):
         self.which_move = 1
         self.change_letters_check = 0
         self.menu_handle = menu
+
+        # register current game in db; [1] -> index, [0] -> status
+        _players2str = ','.join([player.name for player in self.players])
+        self.game_id = ManagementGeneralLeaderboard.register_game(_players2str)[1]
 
         # init gui of scrabble board
         QtWidgets.QMainWindow.__init__(self)
@@ -47,6 +52,7 @@ class Board_gui(QtWidgets.QMainWindow):
         self.check_if_player_kicked = False
         self.number_players_start = self.number_of_players
         self.check_game_over = False
+        self.moves_count = 0
 
         self.letters_used = []
         self.coords_of_letters_used = []
@@ -166,8 +172,7 @@ class Board_gui(QtWidgets.QMainWindow):
             if self.change_letters_check == 0:
                 if self.letter_to_board != "":
                     if label.styleSheet() != 'background-color:lightyellow':
-                        label.setStyleSheet(
-                            'background-color:lightyellow')
+                        label.setStyleSheet('background-color:lightyellow; color: black')
                         label.setText(self.letter_to_board)
                         self.new_player_move_board[i][j] = self.letter_to_board
                         self.check_in_which_move[i][j] = self.which_move
@@ -236,12 +241,20 @@ class Board_gui(QtWidgets.QMainWindow):
                 self.valid_move, words_4_score = self.board.check_words_from_board(self.loaded_dictionary, self.new_player_move_board)
 
         if self.valid_move is True and words_4_score != {}:
+            # increment moves_count
+            self.moves_count += 1
             # index of score field
             self.dict_players[self.current_player][8] += self.board.get_score(words_4_score, self.new_player_move_board)
             # update players score on gui
             self.players[self.current_player].score = self.dict_players[self.current_player][8]
             # copy the player's board onto main board
             self.actual_board = self.new_player_move_board
+
+            ### INSERT BOARD INTO DB
+            _b2string = board_to_string(self.actual_board)
+            # TODO: copy self.new_player_move_board into db
+            ManagementGeneralLeaderboard.save_board(_b2string, self.game_id, self.players[self.current_player].name, self.moves_count)
+            _string2b = ManagementGeneralLeaderboard.acquire_board(self.game_id)
             self.board.actual_board = self.actual_board
             # check for new adjacencies 0,1,2
             self.board.create_sum_board_4_connection()
@@ -252,9 +265,9 @@ class Board_gui(QtWidgets.QMainWindow):
 
             for i in range(15):
                 for j in range(15):
-                    self.dict_board_labels[eval("self.board_label_" + str(i) + "_" + str(j))] = \
-                        [eval("self.board_label_" + str(i) + "_" + str(j)).text(),
-                        eval("self.board_label_" + str(i) + "_" + str(j)).styleSheet(), i, j]
+                    self.dict_board_labels[eval("self.ui.board_label_" + str(i) + "_" + str(j))] = \
+                        [eval("self.ui.board_label_" + str(i) + "_" + str(j)).text(),
+                        eval("self.ui.board_label_" + str(i) + "_" + str(j)).styleSheet(), i, j]
 
         # foul committed
         else:
@@ -550,6 +563,7 @@ class Board_gui(QtWidgets.QMainWindow):
                 self.current_player = (self.which_move - 1) % self.number_of_players
                 self.ui.player_name.setText(self.dict_players[self.current_player][7])
                 self.ui.how_many_points.setText(str(self.dict_players[self.current_player][8]))
+                # get letters of new player and place on buttons
                 letter_helper = self.dict_players[self.current_player]
 
                 self.ui.pushButton1.setText(letter_helper[0])
@@ -569,14 +583,17 @@ class Board_gui(QtWidgets.QMainWindow):
     #     self.kicked_player_check = True
 
     ######### POP-UP HANDLERS
-    # ui[1-9] is how ui remains intact kurwa trzeba bylo to od nowa pisac
+    # ui[1-9] is how ui[0] remains intact kurwa trzeba bylo to od nowa pisac
     def game_over(self):
         self.check_game_over = True
         self.players_sorted = []
+        self.moves_count = 0
         for key in self.players_to_db:
             self.players_sorted.append([key, self.players_to_db.get(key)])
 
         self.players_sorted.sort(key=lambda x: x[1])
+        ### SET WINNER ASSUMING SORTED[0][1] IS WINNER
+        ManagementGeneralLeaderboard.update_game_winner(self.game_id, self.players_sorted[0][1])
 
         self.window4 = QtWidgets.QMainWindow()
         self.ui4 = game_over.Ui_Form8(self.players_sorted, self)
@@ -802,7 +819,7 @@ if __name__ == "__main__":
     test3.name = "yo"
     # test4.name = "asd"
     test = [test1, test2, test3]
-    ui = Board_gui(3, test)
+    ui = Board_gui(3, test, QMainWindow())
     # ui.setupUi(Form)
     # Form.show()
     sys.exit(app.exec())

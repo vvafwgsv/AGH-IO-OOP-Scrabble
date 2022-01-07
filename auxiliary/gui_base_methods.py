@@ -127,3 +127,23 @@ def return_to_menu(source: QMainWindow, menu: QMainWindow) -> None:
     menu.show()
     menu._is_hs_open = False
     source.close()
+
+
+def board_to_string(board: list) -> str:
+    _string = ''
+    for i in range(15):
+        for j in range(15):
+            _string += board[i][j]
+    return _string
+
+
+def string_to_board(string: str) -> list:
+    """
+    get string from db and convert it to board to pass to gui
+    char at string[i+j] corresponds to board[i][j] letter tile
+    """
+    _list = []
+    for i in range(15):
+        for j in range(15):
+            _list[i][j].append(string[i+j])
+    return _list
