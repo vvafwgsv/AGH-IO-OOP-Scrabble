@@ -1,9 +1,15 @@
 import hashlib
 import os
+import platform
 import sqlite3 as sl
 
 
 class CredentialsManager:
+    _path = ''
+    if platform.system() == 'Darwin':
+        _path = '{}{}'.format(os.getcwd(), '/leaderboard.db')
+    elif platform.system() == 'Windows':
+        _path = '{}{}'.format(os.getcwd(), '\\leaderboard.db')
 
     @staticmethod
     def verify_credentials(login: str, password: str) -> bool:
@@ -20,7 +26,7 @@ class CredentialsManager:
             """
                 TODO: CHANGE leaderboard.db name to something more inclusive
             """
-            conn = sl.connect('../leaderboard.db')
+            conn = sl.connect(CredentialsManager._path)
             print(os.getcwd())
             cur = conn.cursor()
             cur.execute("SELECT password FROM users WHERE username=(?)", (_login,))
@@ -48,7 +54,7 @@ class CredentialsManager:
             print('login given %s; pass to change %s, new: %s' % (login, password, new_password))
 
             try:
-                conn = sl.connect('../leaderboard.db')
+                conn = sl.connect(CredentialsManager._path)
                 print(os.getcwd())
                 cur = conn.cursor()
                 cur.execute("UPDATE users SET password=(?) WHERE username=(?)", (_new_pass, login))
@@ -76,7 +82,7 @@ class CredentialsManager:
             """
                 TODO: CHANGE leaderboard.db name to something more inclusive
             """
-            conn = sl.connect('../leaderboard.db')
+            conn = sl.connect(CredentialsManager._path)
             print(os.getcwd())
             cur = conn.cursor()
             cur.execute("INSERT INTO users VALUES(?, ?)", (_login, _hash_pass))
